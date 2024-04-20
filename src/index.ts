@@ -38,6 +38,34 @@ function getRangeHeader(range: ParsedRange, fileSize: number): string {
   }/${fileSize}`;
 }
 
+async function isWithPermission(
+  path: string,
+  env:Env): Promise<boolean> {
+
+    const permissionsPath = ".permissions.json";
+    let res = await env.R2_BUCKET.get(permissionsPath);
+    if (res == null) {
+      return false;
+    }
+    let permissions;
+    try {
+      permissions = await res.json();
+    } catch (e: any) {
+      console.error('error parsing pson', e)
+      return false;
+    }
+
+    const now = new Date();
+    for permission in permission {
+      let before = new Date(permission["before"]);
+      if (now <= before && path.startsWith(permission["prefix"])) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
 // some ideas for this were taken from / inspired by
 // https://github.com/cloudflare/workerd/blob/main/samples/static-files-from-disk/static.js
 async function makeListingResponse(
@@ -48,6 +76,9 @@ async function makeListingResponse(
   if (path === "/") path = "";
   else if (path !== "" && !path.endsWith("/")) {
     path += "/";
+  }
+  if (! await isWithPermission(path, env)) {
+    return null;
   }
   let cursor = new URL(request.url).searchParams.get("cursor") || undefined;
   let listing = await env.R2_BUCKET.list({
@@ -201,6 +232,9 @@ export default {
       const url = new URL(request.url);
       let path = (env.PATH_PREFIX || "") + decodeURIComponent(url.pathname);
 
+      if (! await isWithPermission(path, env)){
+        return new Response("Pile Not Found", { status: 404 });
+      }
       // directory logic
       if (path.endsWith("/")) {
         // if theres an index file, try that. 404 logic down below has dir fallback.

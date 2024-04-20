@@ -7,6 +7,21 @@ If you want an uploader, try [Aster](https://github.com/kotx/aster)!
 If you see a bug or something missing, please open an issue or pull request!
 
 ## Features
+- Basic public permission control for folders and files.
+  Control permission at `R2://.permissions.json`. A jsonfile consist of a list of permission description block, structure show below:
+```json
+[
+   {
+       before: "js new Date parsable string",
+       prefix: "file-or-folder-prefix"
+   },
+   ...
+]
+```
+  1. If the file is not exist, show nothing.
+  2. If the config file unparsable, show nothing.
+  3. Only show the existing folder with time in range.
+
 - File listings (with optional hidden files)!
 
 ![screenshot of file listings in light mode](https://user-images.githubusercontent.com/33439542/193165135-1dd935f5-b68b-495a-97cc-9c69c3c0ce01.png)
