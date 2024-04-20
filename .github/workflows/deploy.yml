@@ -23,10 +23,10 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Prepare wrangler.toml
         run: |
-          sed -i '/^\(bucket_name\).*$/\1 = "file"/' wrangler.toml
-          sed -i '/^\(preview_bucket_name\).*$/\1 = "file"/' wrangler.toml
-          sed -i '/^\(ITEMS_PER_PAGE\).*$/\1 = 100/' wrangler.toml
-          sed -i '/^\(ALLOWED_ORIGINS\).*$/\1 = "${{ secrets.CF_DOMAIN }}"/' wrangler.toml
+          sed -i '/^\(bucket_name\).*$/s//\1 = "file"/' wrangler.toml
+          sed -i '/^\(preview_bucket_name\).*$/s//\1 = "file"/' wrangler.toml
+          sed -i '/^\(ITEMS_PER_PAGE\).*$/s//\1 = 100/' wrangler.toml
+          sed -i '/^\(ALLOWED_ORIGINS\).*$/s//\1 = "${{ secrets.CF_DOMAIN }}"/' wrangler.toml
       - name: Publish
         run: pnpm run deploy
         env:
