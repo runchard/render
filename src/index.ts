@@ -56,7 +56,7 @@ async function isWithPermission(
     }
 
     const now = new Date();
-    for permission in permission {
+    for (let permission of permissions) {
       let before = new Date(permission["before"]);
       if (now <= before && path.startsWith(permission["prefix"])) {
         return true;
