@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "dev": "wrangler dev --remote",
-    "deploy": "wrangler publish",
+    "deploy": "wrangler deploy",
     "prepublishOnly": "tsc"
   },
   "devDependencies": {
